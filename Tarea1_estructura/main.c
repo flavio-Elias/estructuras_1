@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
     FILE* salida = fopen(archivoSalida, "w");
 
     char alfabeto[27];
-    crearAlfabeto(alfabeto, clave1, clave2);
+    Enigma(alfabeto, clave1, clave2);
     procesarMensaje(entrada, salida, modo, alfabeto);
 
     fclose(entrada);
