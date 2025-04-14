@@ -3,26 +3,23 @@
 #include <ctype.h>
 #include "enigma.h"
 
-#define largo_del_abecedario 26
+const char* alfabeto_con_caracteres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&()[]{}=+-_.,:;?<> ";
 
 //definimos la funcion que verifica si los caracteres son todos distintos para las dos palabras
 int tieneLetrasRepetidas(const char* palabra) {
+   //Vector para guardar los caracteres
+	int usado[256]={0};
 
-  //se crea un arreglo con 26 coordenadas, todas comenzadas de 0, por ejemplo (0,0,0,0,...,0)
-    int letras[largo_del_abecedario] = {0};
     //se recorre la palabra letra por letra hasta que termine ( \0 es el indicador de que termino el arreglo, me lo dijo chatgpt)
     for (int i = 0; palabra[i] != '\0'; i++) {
 
      	//guardamos la letra que recorremos en una variable
-        char c = palabra[i];
+        unsigned char c = palabra[i];
 
-        //verificamos que la letra sea una letra osea que no fuese un caracter ya sean espacios o caracteres como !"#$ (esta funcion me la dio el chatgpt)
-        if (!isalpha(c)) return 1;
+        //anota caracteres repetidos
+        if (!usado[c]) return 1;
+		usado[c]=1;
 
-        //asignamos a cada letra un espacio en el arreglo, ademas en caso de que este "contador" llegue a 2 devuelve verdader y falla
-        int index = c - 'a';
-        if (letras[index]) return 1;
-        letras[index] = 1;
     }
     return 0;
 }
@@ -34,16 +31,20 @@ int clavesValidas(const char* palabra1, const char* palabra2) {
     if (tieneLetrasRepetidas(palabra1) || tieneLetrasRepetidas(palabra2))
         return 0;
 
-  //volvemos a crear el arreglo de 26 coordenadas para almacenar si se han o no repetido las letras
-    int letras[largo_del_abecedario] = {0};
+   //Vector para guardar los caracteres
+    int usado[256] = {0};
 
     //añade 1 si hay x letra definida
-    for (int i = 0; palabra1[i] != '\0'; i++)
-        letras[tolower(palabra1[i]) - 'a'] = 1;
+    for (int i = 0; palabra1[i] != '\0'; i++){
+        unsigned char c=palabra1[1];
+    	usado[c] =1;
+    }
 
     //verifica si esas letras que encontramos en la primera parte se vuelven a repetir (esto se verifica en el if)
-    for (int i = 0; palabra2[i] != '\0'; i++)
-        if (letras[tolower(palabra2[i]) - 'a']) return 0;
+    for (int i = 0; palabra2[i] != '\0'; i++){
+        unsigned char c=palabra2[i];
+    	if(usado[c]) return 0;
+    }
 
     return 1;
 }
@@ -54,81 +55,69 @@ int modos(const char* modo) {
 }
 
 //se crea el alfabeto alternativo que utiliza el codigo enigma
-void Enigma(char alfabeto[], const char* palabra1, const char* palabra2) {
+void Enigma(char alfabeto_cifrado[], const char* palabra1, const char* palabra2, const char* alfabeto) {
   //guarda aquellas letras que ya fueron usadas
-  int usado[largo_del_abecedario] = {0};
+  int usado[256] = {0};
 	//indice para recorrer este alfabeto
   int i = 0;
 
   //se recorre la palabra 1
     for (int j = 0; palabra1[j] != '\0'; j++) {
       //convierte la letra recorrida a una minsucula
-        char c = tolower(palabra1[j]);
+        unsigned char c = palabra1[j];
 
-        //le asignamos una posicion en el alfabeto
-        usado[c - 'a'] = 1;
-        alfabeto[i++] = c;
-
+        if(!usado[c]){
+          alfabeto_cifrado[i++] =c;
+          usado[c]=1;
+		}
     }
 
     //repetimos lo mismo para la segunda palabra
     for (int j = 0; palabra2[j] != '\0'; j++) {
-        char c = tolower(palabra2[j]);
-        usado[c - 'a'] = 1;
-        alfabeto[i++] = c;
+        unsigned char c = palabra2[j];
+        if(!usado[c]){
+          alfabeto_cifrado[i++] =c;
+          usado[c]=1;
+        }
+
 
     }
 
     //rellenamos el resto del abecedario (es decir rellenamos las letras que no usamos)
-    for (char c = 'a'; c <= 'z'; c++) {
-        if (!usado[c - 'a']) {
-            alfabeto[i++] = c;
+    for (int j=0; alfabeto[j] != '\0'; j++) {
+        unsigned char c=alfabeto[j];
+        if(!usado[c]){
+            alfabeto_cifrado[i++] =c;
+            usado[c]=1;
         }
     }
 
     //maracmaos el fin del abecedario
-    alfabeto[largo_del_abecedario] = '\0';
+    alfabeto_cifrado[i] = '\0';
 }
 
 //funcion que lee, codifica y entrega el mensaje de salida
-void procesarMensaje(FILE* archivo_de_entrada, FILE* archivo_de_salida, const char* modo, const char alfabeto[]) {
+void procesarMensaje(FILE* archivo_de_entrada, FILE* archivo_de_salida, const char* modo, const char* alfabeto, const char* cifrado ) {
 
   //leemos el archivo hasta que termina (EOF= End Of File)
   char c;
     while ((c = fgetc(archivo_de_entrada)) != EOF) {
 
-      //Nos aseguramos que en el archivo solo modifiquemos las letras, no podemos modificar los numeros ya que no lo hicimos antes y el programa no admite numeros
-        if (isalpha(c)) {
-
-          //declaramos un indice
-            int indice;
+    //variable que indica la posicion en nuestro abecedario
+    	char* pos;
 
             //hacemos la distincion si se esta codificando (encode) o decodificando (decode)
             if (strcmp(modo, "encode") == 0) {
-              //convertimos la letra a minuscula y le asignamos un indice
-                indice = tolower(c) - 'a';
+				//buscamos la posicion del caracter c en el alfabeto con caracteres
+				pos= strchr(alfabeto,c);
+                //linea que cifra el mensaje, verifica que este c en el alfabeto con caracteres y luego reemplaza c por el caracter correspondiente en el alfabeto cifrado
+                if(pos) c =cifrado[pos - alfabeto];
+			}else {
+                //buscamos la posicion de c esta vez en alfabeto cifrado
+            	pos = strchr(cifrado,c);
 
-                //si la letra ingresada es mayuscula entonces devolvemos esa letra a mayuscula
-                if (isupper(c)) {
-    				c = toupper(alfabeto[indice]);
-				}else {
-                     c=alfabeto[indice];
-				}
-            //en caso de que no sea encode, es decir, decode hacemos lo mismo
-            } else {
-
-              //Buscamos la letra en el abecedario que hicmos
-                for (indice = 0; indice < largo_del_abecedario; indice++) {
-    				if (alfabeto[indice] == tolower(c)) break;
-				}
-
-                //vemos si la letra original era mayuscula, en caso de que fuese le devolvemos a ese estado
-				if (isupper(c)) {
-    				c = toupper('a' + indice);
-				} else {
-    				c = 'a' + indice;
-                }
-			}
+                //linea que decifra el mensaje, verificamos que c este en cifrado y luego reemplaza c en el alfabeto con caracteres
+				if (pos) c =alfabeto[pos - cifrado];
 
         }
         //escribimos la letra resultante en el archivo
