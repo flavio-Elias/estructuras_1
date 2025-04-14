@@ -1,0 +1,3 @@
+E:/REPOS/Tarea1/estructuras_1/estructuras_1/build/CMakeFiles/Tarea1_estructura.dir
+E:/REPOS/Tarea1/estructuras_1/estructuras_1/build/CMakeFiles/edit_cache.dir
+E:/REPOS/Tarea1/estructuras_1/estructuras_1/build/CMakeFiles/rebuild_cache.dir

@@ -1,27 +1,16 @@
-# Nombre del ejecutable
-TARGET = programa
+CC=gcc
+CFLAGS=-Wall -Wextra -std=c99
 
-# Archivos fuente
-SRCS = main.c errors.c
+all: tarea1
 
-# Archivos objeto (se generan a partir de los .c)
-OBJS = $(SRCS:.c=.o)
+tarea1: main.o enigma.o
+	$(CC) $(CFLAGS) -o tarea1 main.o enigma.o
 
-# Compilador y flags
-CC = gcc
-CFLAGS = -Wall -g
+main.o: main.c enigma.h
+	$(CC) $(CFLAGS) -c main.c
 
-# Regla por defecto
-all: $(TARGET)
+enigma.o: enigma.c enigma.h
+	$(CC) $(CFLAGS) -c enigma.c
 
-# Regla para construir el ejecutable
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
-
-# Regla para compilar .c a .o
-%.o: %.c main.h
-	$(CC) $(CFLAGS) -c $< -o $@
-
-# Limpiar archivos compilados
 clean:
-	rm -f *.o $(TARGET)
+	rm -f *.o tarea1

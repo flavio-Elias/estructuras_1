@@ -1,0 +1,2 @@
+C:\mingw64\bin\ar.exe qc libTarea1_estructura.a CMakeFiles/Tarea1_estructura.dir/main.c.obj
+C:\mingw64\bin\ranlib.exe libTarea1_estructura.a

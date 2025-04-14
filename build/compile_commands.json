@@ -1,0 +1,8 @@
+[
+{
+  "directory": "E:/REPOS/Tarea1/estructuras_1/estructuras_1/build",
+  "command": "C:\\mingw64\\bin\\gcc.exe   -g -std=gnu11 -o CMakeFiles\\Tarea1_estructura.dir\\main.c.obj -c E:\\REPOS\\Tarea1\\estructuras_1\\estructuras_1\\main.c",
+  "file": "E:/REPOS/Tarea1/estructuras_1/estructuras_1/main.c",
+  "output": "CMakeFiles/Tarea1_estructura.dir/main.c.obj"
+}
+]

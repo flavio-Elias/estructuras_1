@@ -1,23 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "main.h"
+#include "enigma.h"
 
-int main(){
-    Args arg;
+int main(int argc, char* argv[]) {
 
-    printf("NOMBRE FILE:");
-    scanf("%s", arg.nametxt);
+    char* archivoEntrada = argv[1];
+    char* modo = argv[2];
+    char* clave1 = argv[3];
+    char* clave2 = argv[4];
+    char* archivoSalida = argv[5];
 
-    printf("ENCODE/DECODE:");
-    scanf("%s", arg.change);
 
-    printf("PALABRA1");
-    scanf("%s", arg.word1);
+    FILE* entrada = fopen(archivoEntrada, "r");
 
-    printf("PALABRA2");
-    scanf("%s", arg.word2);
+    FILE* salida = fopen(archivoSalida, "w");
 
-    printf("NOMBRE FILE RETURN:");
-    scanf("%s", arg.newnametxt);
+    char alfabeto[27];
+    Enigma(alfabeto, clave1, clave2);
+    procesarMensaje(entrada, salida, modo, alfabeto);
+
+    fclose(entrada);
+    fclose(salida);
+
+    printf("Proceso completado. Archivo de salida: %s\n", archivoSalida);
+    return 0;
 }
+
