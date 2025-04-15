@@ -19,24 +19,24 @@ int main(int argc, char* argv[]) {
     int bruh = argc;
     printf("%d\n", bruh);
     if (bruh != 6){
-        printf("Te faltaron argumentos");
+        printf("Se ha producido un error. \nEl numero de argumentos es erroneo, debe de entregar 6 argumentos.");
         return 1;
     }
 
     ///2
     if (!modos(modo)) {
-        printf("se ha producido un tremendo error, no pusiste un modo valido, recuerda que los modos validos son (encode) y (decode.\n");
+        printf("Se ha producido un error. \nNo se ha introducido un modo valido, los modos validos son (encode) y (decode.\n");
         return 1;
     }
     ///3
     if (strlen(palabra1) != strlen(palabra2)){
-        printf("You should kill yourself NOW!! *rayos sfx*");
+        printf("Se a producido un error. \nAmbas palabras deben tener la misma cantidad de caracteres");
         return 1;
     }
 
     ///4
     if (strcmp(archivo_de_entrada, archivo_de_salida) == 0) {
-        printf("Errorazo, los archivos de entrada y salida tienen el mismo nombre (deben ser distintos).\n");
+        printf("Se ha producido un error. \nLos archivos de entrada y salida tienen el mismo nombre (deben ser distintos).\n");
         return 1;
     }
     ///////
