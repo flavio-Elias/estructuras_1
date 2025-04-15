@@ -17,7 +17,6 @@ int main(int argc, char* argv[]) {
     ///FUNCIONES ERROR
     ///1
     int bruh = argc;
-    printf("%d\n", bruh);
     if (bruh != 6){
         printf("Se ha producido un error. \nEl numero de argumentos es erroneo, debe de entregar 6 argumentos.");
         return 1;
